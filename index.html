@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Выбери правильную дату рождения</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #1f2937;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      width: 300px;
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+    select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    .msg {
+      margin-top: 15px;
+      font-size: 16px;
+    }
+    .correct { color: #22c55e; }
+    .wrong { color: #ef4444; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Выбери свою дату рождения</h1>
+    <form id="birthForm">
+      <select id="day">
+        <option value="">День</option>
+        <!-- Заполняем дни -->
+        <script>
+          for (let i = 1; i <= 31; i++) {
+            document.write(`<option value="${i}">${i}</option>`);
+          }
+        </script>
+      </select>
+      <select id="month">
+        <option value="">Месяц</option>
+        <option value="1">Январь</option>
+        <option value="2">Февраль</option>
+        <option value="3">Март</option>
+        <option value="4">Апрель</option>
+        <option value="5">Май</option>
+        <option value="6">Июнь</option>
+        <option value="7">Июль</option>
+        <option value="8">Август</option>
+        <option value="9">Сентябрь</option>
+        <option value="10">Октябрь</option>
+        <option value="11">Ноябрь</option>
+        <option value="12">Декабрь</option>
+      </select>
+      <select id="year">
+        <option value="">Год</option>
+        <script>
+          for (let y = 2000; y <= 2025; y++) {
+            document.write(`<option value="${y}">${y}</option>`);
+          }
+        </script>
+      </select>
+      <button type="submit">Проверить</button>
+    </form>
+    <div class="msg" id="message"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('birthForm');
+    const msg = document.getElementById('message');
+
+    const correctDay = 30;
+    const correctMonth = 7;
+    const correctYear = 2009;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const day = parseInt(document.getElementById('day').value);
+      const month = parseInt(document.getElementById('month').value);
+      const year = parseInt(document.getElementById('year').value);
+
+      if (day === correctDay && month === correctMonth && year === correctYear) {
+        msg.textContent = '🎉 Верно! Дата рождения совпадает!';
+        msg.className = 'msg correct';
+      } else {
+        msg.textContent = '❌ Неправильно. Попробуй снова!';
+        msg.className = 'msg wrong';
+      }
+    });
+  </script>
+</body>
+</html>
