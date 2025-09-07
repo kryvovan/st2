@@ -1,120 +1,177 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Выбери правильную дату рождения</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Вход по паролю</title>
   <style>
+    :root {
+      --bg: #0f172a;        /* slate-900 */
+      --card: #111827;      /* gray-900 */
+      --text: #e5e7eb;      /* gray-200 */
+      --muted: #9ca3af;     /* gray-400 */
+      --accent: #3b82f6;    /* blue-500 */
+      --accent-2: #2563eb;  /* blue-600 */
+      --danger: #ef4444;    /* red-500 */
+      --success: #22c55e;   /* green-500 */
+      --ring: rgba(59,130,246,.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #fff;
-      text-align: center;
       margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 80% -10%, rgba(59,130,246,.15), transparent),
+                  radial-gradient(1000px 500px at 10% 110%, rgba(34,197,94,.12), transparent),
+                  var(--bg);
+      display: grid;
+      place-items: center;
+      padding: 24px;
     }
-    .container {
-      background: #1f2937;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-      width: 300px;
-    }
-    h1 {
-      margin-bottom: 20px;
-      font-size: 20px;
-    }
-    select, button {
+    .card {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
+      max-width: 420px;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+      backdrop-filter: blur(8px);
+      padding: 24px;
     }
-    button {
-      background: #3b82f6;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
+    .title { font-weight: 700; font-size: 22px; margin: 0 0 10px; }
+    .subtitle { color: var(--muted); margin: 0 0 24px; font-size: 14px; }
+
+    .field {
+      position: relative;
+      margin-bottom: 14px;
     }
-    button:hover {
-      background: #2563eb;
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 44px 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(17,24,39,.6);
+      color: var(--text);
+      outline: none;
+      transition: box-shadow .2s, border-color .2s;
     }
-    .msg {
-      margin-top: 15px;
-      font-size: 16px;
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 6px var(--ring);
     }
-    .correct { color: #22c55e; }
-    .wrong { color: #ef4444; }
+    .toggle-eye {
+      position: absolute; right: 10px; top: 35px; cursor: pointer; user-select: none;
+      font-size: 13px; color: var(--muted); padding: 6px 8px; border-radius: 8px;
+    }
+    .toggle-eye:hover { background: rgba(255,255,255,.05); color: var(--text); }
+
+    .btn {
+      width: 100%;
+      border: none; cursor: pointer; font-weight: 600; letter-spacing: .2px;
+      padding: 12px 14px; border-radius: 12px; margin-top: 6px;
+      color: white; background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      box-shadow: 0 12px 30px rgba(59,130,246,.35);
+      transition: transform .06s ease-out, filter .2s;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .help { text-align: center; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+    .msg { margin-top: 12px; font-size: 14px; }
+    .msg.error { color: var(--danger); }
+    .msg.ok { color: var(--success); }
+
+    .protected {
+      display: none;
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(34,197,94,.08);
+      border: 1px solid rgba(34,197,94,.25);
+    }
+    .protected h2 { margin: 0 0 10px; font-size: 18px; }
+    .protected p { margin: 0; color: #d1fae5; }
+
+    footer { margin-top: 18px; text-align: center; font-size: 11px; color: var(--muted); }
+    code { background: rgba(255,255,255,.06); padding: 2px 6px; border-radius: 6px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Выбери свою дату рождения</h1>
-    <form id="birthForm">
-      <select id="day">
-        <option value="">День</option>
-        <!-- Заполняем дни -->
-        <script>
-          for (let i = 1; i <= 31; i++) {
-            document.write(`<option value="${i}">${i}</option>`);
-          }
-        </script>
-      </select>
-      <select id="month">
-        <option value="">Месяц</option>
-        <option value="1">Январь</option>
-        <option value="2">Февраль</option>
-        <option value="3">Март</option>
-        <option value="4">Апрель</option>
-        <option value="5">Май</option>
-        <option value="6">Июнь</option>
-        <option value="7">Июль</option>
-        <option value="8">Август</option>
-        <option value="9">Сентябрь</option>
-        <option value="10">Октябрь</option>
-        <option value="11">Ноябрь</option>
-        <option value="12">Декабрь</option>
-      </select>
-      <select id="year">
-        <option value="">Год</option>
-        <script>
-          for (let y = 2000; y <= 2025; y++) {
-            document.write(`<option value="${y}">${y}</option>`);
-          }
-        </script>
-      </select>
-      <button type="submit">Проверить</button>
+  <main class="card" role="main" aria-labelledby="title">
+    <h1 id="title" class="title">Вход по паролю</h1>
+    <p class="subtitle">Введите пароль</p>
+
+    <form id="form" autocomplete="off">
+      <div class="field">
+        <label for="pwd">Пароль</label>
+        <input id="pwd" name="pwd" type="password" required minlength="4" placeholder="Введите пароль" aria-describedby="hint" />
+        <span id="eye" class="toggle-eye" aria-label="Показать пароль" title="Показать/скрыть">Показать</span>
+      </div>
+      <button class="btn" type="submit">Войти</button>
+      <div id="msg" class="msg" aria-live="polite" role="status"></div>
     </form>
-    <div class="msg" id="message"></div>
-  </div>
+
+    <section id="secret" class="protected" aria-hidden="true">
+      <h2>Доступ разрешён ✅</h2>
+      <p>https://drive.google.com/file/d/1N7Lef7YTj-sMl1RfrUnwiI50582vVRZb/view?usp=drive_link</p>
+    </section>
+
+    <footer>
+      <p>Подсказка для теста: пароль по умолчанию — <code>poshel nahui</code>.</p>
+    </footer>
+  </main>
 
   <script>
-    const form = document.getElementById('birthForm');
-    const msg = document.getElementById('message');
+    // ⚠️ ВНИМАНИЕ: клиентская проверка пароля НЕ безопасна.
+    // Любой пользователь может посмотреть код и увидеть пароль.
+    // Для настоящей защиты нужен сервер.
 
-    const correctDay = 30;
-    const correctMonth = 7;
-    const correctYear = 2009;
+    const FORM = document.getElementById('form');
+    const PWD = document.getElementById('pwd');
+    const MSG = document.getElementById('msg');
+    const SECRET = document.getElementById('secret');
+    const EYE = document.getElementById('eye');
 
-    form.addEventListener('submit', (e) => {
+    // Пароль по умолчанию. Можете заменить на свой.
+    const PASSWORD = 'KRONOS';
+
+    // Показать/скрыть пароль
+    EYE.addEventListener('click', () => {
+      const isPwd = PWD.type === 'password';
+      PWD.type = isPwd ? 'text' : 'password';
+      EYE.textContent = isPwd ? 'Скрыть' : 'Показать';
+      EYE.setAttribute('aria-label', isPwd ? 'Скрыть пароль' : 'Показать пароль');
+    });
+
+    // Обработка формы
+    FORM.addEventListener('submit', (e) => {
       e.preventDefault();
+      const value = PWD.value.trim();
 
-      const day = parseInt(document.getElementById('day').value);
-      const month = parseInt(document.getElementById('month').value);
-      const year = parseInt(document.getElementById('year').value);
-
-      if (day === correctDay && month === correctMonth && year === correctYear) {
-        msg.textContent = '🎉 Верно! Дата рождения совпадает!';
-        msg.className = 'msg correct';
+      // Простая проверка (НЕ безопасно)
+      if (value === PASSWORD) {
+        MSG.textContent = 'Пароль верный!';
+        MSG.className = 'msg ok';
+        SECRET.style.display = 'block';
+        SECRET.setAttribute('aria-hidden', 'false');
+        // Очистим поле
+        PWD.value = '';
       } else {
-        msg.textContent = '❌ Неправильно. Попробуй снова!';
-        msg.className = 'msg wrong';
+        MSG.textContent = 'Неверный пароль. Попробуйте ещё раз.';
+        MSG.className = 'msg error';
+        SECRET.style.display = 'none';
+        SECRET.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    // Позволяем нажать Enter внутри поля для отправки
+    PWD.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        FORM.requestSubmit();
       }
     });
   </script>
